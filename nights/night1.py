@@ -21,15 +21,19 @@ door2 = ("  ")
 
 door1Closed = False
 door2Closed = False
-gameOver = False
 
+gameTime = 12
+lastTimeUpdate = time.time()
+
+gameOver = False
+gameWin = False
 
 
 def nightOneGraphics():
-    
 
     os.system("cls")
-    print("        |------------------------|\n" 
+    print(f"|Time =",gameTime,"AM|\n\n"
+        "        |------------------------|\n" 
         "        |     |", "" ,mainStage[0], mainStage[1], mainStage[2]," "   "|     |\n"
         "        |                        |\n"
         "        |     --------------     |\n"
@@ -70,9 +74,17 @@ def bonnieLogic():
 
 
 def playNight1():
-    global door1Closed, door2Closed, gameOver, bonniePos, mainStage, office, leftHall, rightHall, door1, door2
+    global door1Closed, door2Closed, gameOver, bonniePos, mainStage, office, leftHall, rightHall, door1, door2, gameTime, lastTimeUpdate
 
     gameOver = False
+
+    gameTime = 12
+    lastTimeUpdate = time.time()
+
+    door1Closed = False
+    door2Closed = False
+
+
 
     mainStage[0] = "🐻"
     mainStage[1] = "🐰"
@@ -82,10 +94,9 @@ def playNight1():
         leftHall [i-1] = "  "
         rightHall [i-1] = "  "
 
-
     office[0] = "  "
 
-
+    
 
 
     while not gameOver:
@@ -110,9 +121,18 @@ def playNight1():
         nightOneGraphics()
         time.sleep(1)
         bonnieLogic()
+
+        if time.time() - lastTimeUpdate >= 60:
+            gameTime += 1
+            lastTimeUpdate = time.time()
+            if gameTime > 12:
+                gameTime = 1
+
         nightOneGraphics()
 
     nightOneGraphics()
     time.sleep(1)
     os.system("cls")
     print("You lose!")
+
+
