@@ -47,7 +47,6 @@ def night1():
     os.system("cls")
 
     playNight1()
-    print("Brochacho theres nothing here yet, im sending you back")
     time.sleep(3)    
 
 def night2():
