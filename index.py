@@ -33,7 +33,7 @@ def mainMenu():
             elif choice == "\r" and selector == 2:
                 night2()
 
-            else:
+            elif choice == "c":
                 os.system("cls")
                 for i in range(8):
                     print("")
@@ -45,7 +45,8 @@ def mainMenu():
 
 def night1():
     os.system("cls")
-
+    print("Night 1")
+    time.sleep(2) 
     playNight1()
     time.sleep(3)    
 
