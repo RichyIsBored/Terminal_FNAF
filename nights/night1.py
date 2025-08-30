@@ -4,7 +4,7 @@ import random
 import msvcrt
 
 
-mainStage = ["🐻", "🐰", "🐔"]
+mainStage = ["🐰", "🐻", "🐔"]
 
 leftHall = ["  ", "  "]
 leftDoor = ["  ", "  "]
@@ -15,6 +15,8 @@ rightDoor = ["  ", "  "]
 office = ["  "]
 
 bonniePos = 0
+bonnieMove = 0
+bonnieRage = 19
 
 door1 = ("  ")
 door2 = ("  ")
@@ -25,6 +27,10 @@ door2Closed = False
 gameTime = 12
 lastTimeUpdate = time.time()
 
+power = 100
+
+drainMultiply = 0.15
+
 gameOver = False
 gameWin = False
 
@@ -32,7 +38,7 @@ gameWin = False
 def nightOneGraphics():
 
     os.system("cls")
-    print(f"|Time =",gameTime,"AM|\n\n"
+    print(f"|Time = {gameTime}AM|Power = {round(power)}%\n\n"
         "        |------------------------|\n" 
         "        |     |", "" ,mainStage[0], mainStage[1], mainStage[2]," "   "|     |\n"
         "        |                        |\n"
@@ -43,38 +49,44 @@ def nightOneGraphics():
         "        |   ",door1,"  " ,office[0],"   ", door2,   "    |\n"
         "        |", leftDoor[0]," |            |     |\n"
         "        |------------------------|\n")
-    
+    print(powerDrainRate, bonnieMove)
 
 
 def bonnieLogic():
-    global bonniePos, gameOver, mainStage, leftHall, office
+    global bonniePos, gameOver, mainStage, leftHall, office, bonnieRage, bonnieMove
 
-    if random.randint(1,4) == 1:
-        if bonniePos == 0:
-            bonniePos = 1
-            mainStage[1] = "  "
-            leftHall[0] = "🐰"
+    if random.randint(bonnieRage,20) == 20:
+        
+        bonnieMove += 1
 
-        elif bonniePos == 1:
-            bonniePos = 2
-            leftHall[0] = "  "
-            leftDoor[0] = "🐰"
+        if bonnieMove == 3:
+            bonnieMove = 0
 
-        elif bonniePos == 2:
-            if door1Closed:
-                bonniePos = 0
-                mainStage[1] = "🐰"
-                leftDoor[0] = "  "                
-            else:
-                bonniePos = 0
-                leftDoor[0] = "  "
-                office[0] = "🐰"
-                gameOver = True
+            if bonniePos == 0:
+                bonniePos = 1
+                mainStage[0] = "  "
+                leftHall[0] = "🐰"
+
+            elif bonniePos == 1:
+                bonniePos = 2
+                leftHall[0] = "  "
+                leftDoor[0] = "🐰"
+
+            elif bonniePos == 2:
+                if door1Closed:
+                    bonniePos = 0
+                    mainStage[0] = "🐰"
+                    leftDoor[0] = "  "                
+                else:
+                    bonniePos = 4
+                    leftDoor[0] = "  "
+                    office[0] = "🐰"
+                    gameOver = True
 
 
 
 def playNight1():
-    global door1Closed, door2Closed, gameOver, bonniePos, mainStage, office, leftHall, rightHall, door1, door2, gameTime, lastTimeUpdate
+    global door1Closed, door2Closed, gameOver, bonniePos, mainStage, office, leftHall, rightHall, door1, door2, gameTime, lastTimeUpdate, power, gameWin, drainMultiply, powerDrainRate, bonnieMove
 
     gameOver = False
 
@@ -83,11 +95,16 @@ def playNight1():
 
     door1Closed = False
     door2Closed = False
+    door1 = ("  ")
+    door2 = ("  ")
 
+    power = 100
+    powerDrainRate = 0
 
-
-    mainStage[0] = "🐻"
-    mainStage[1] = "🐰"
+    mainStage[0] = "🐰"
+    bonniePos = 0
+    bonnieMove = 0
+    mainStage[1] = "🐻"
     mainStage[2] = "🐔"
 
     for i in range(2):
@@ -116,23 +133,48 @@ def playNight1():
                     door2 = "  "
                 else:
                     door2 = "🚪"
+            
+            elif key == "c":
+                gameOver = True
+
+            
+        if door1Closed and door2Closed:
+            powerDrainRate = drainMultiply * 6
+        elif door1Closed or door2Closed:
+            powerDrainRate = drainMultiply * 3
+        else:
+            powerDrainRate = drainMultiply
+        
+
+        power -=  powerDrainRate
+
+        if power <= 0:
+            gameOver = True
 
 
         nightOneGraphics()
-        time.sleep(1)
+        time.sleep(0.5)
         bonnieLogic()
 
-        if time.time() - lastTimeUpdate >= 60:
+        if time.time() - lastTimeUpdate >= 30:
             gameTime += 1
             lastTimeUpdate = time.time()
             if gameTime > 12:
                 gameTime = 1
 
+        if gameTime == 6:
+            gameOver = True
+            gameWin = True
+
         nightOneGraphics()
 
     nightOneGraphics()
-    time.sleep(1)
+    time.sleep(3)
     os.system("cls")
-    print("You lose!")
+    
+    if gameWin == True:
+        print("You Win!")
+    else:
+        print("You Lose :(")
 
 

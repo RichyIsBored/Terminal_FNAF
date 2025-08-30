@@ -5,7 +5,7 @@ from nights.night2 import playNight2
 
 def mainMenu():
 
-    selector = 2
+    selector = 1
 
     while True:
               
@@ -16,18 +16,24 @@ def mainMenu():
         if selector == 1:
             print("Night 1   <---")
             print("Night 2")
+            
         elif selector == 2:
             print("Night 1")
             print("Night 2   <---")
+
         for i in range(2):
             print("")    
 
         if msvcrt.kbhit():
             choice = msvcrt.getch().decode()
             if choice == "w":
-                selector = 1
+                selector -= 1
+                if selector <= 0:
+                    selector = 1
             elif choice == "s":
-                selector = 2
+                selector += 2
+                if selector >= 3:
+                    selector = 2
             elif choice == "\r" and selector == 1:
                 night1()
             elif choice == "\r" and selector == 2:
