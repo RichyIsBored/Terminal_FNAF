@@ -3,10 +3,17 @@ import os
 import random
 import msvcrt
 
+#----Location Variables----#
 
 mainStage = ["🐰", "🐻", "🐔"]
+pirateCove = "🦊"
+
+
+diningArea = ["  ", "  ", "  "]
+
 
 leftHall = ["  ", "  "]
+supplyCloset = "  "
 leftDoor = ["  ", "  "]
 
 rightHall = ["  ", "  "]
@@ -14,12 +21,13 @@ rightDoor = ["  ", "  "]
 
 office = ["  "]
 
+
 bonniePos = 0
 bonnieMove = 0
-bonnieRage = 19
+bonnieRage = 2
 
-door1 = ("  ")
-door2 = ("  ")
+door1 = ("🚪")
+door2 = ("🚪")
 
 door1Closed = False
 door2Closed = False
@@ -28,7 +36,7 @@ gameTime = 12
 lastTimeUpdate = time.time()
 
 power = 100
-
+powerDrainRate = 0
 drainMultiply = 0.15
 
 gameOver = False
@@ -38,22 +46,42 @@ gameWin = False
 def nightOneGraphics():
 
     os.system("cls")
-    print(f"|Time = {gameTime}AM|Power = {round(power)}%\n\n"
-        "        |------------------------|\n" 
-        "        |     |", "" ,mainStage[0], mainStage[1], mainStage[2]," "   "|     |\n"
-        "        |                        |\n"
-        "        |     --------------     |\n"
-        "        |",leftHall[0]," |            |     |\n"
-        "        |     |            |     |\n"
-        "        |     --------------     |\n" 
-        "        |   ",door1,"  " ,office[0],"   ", door2,   "    |\n"
-        "        |", leftDoor[0]," |            |     |\n"
-        "        |------------------------|\n")
+    print(f"| Time = {gameTime}AM | Power = {round(power)}% |\n\n"
+"\n\n" \
+""
+f"             |‾‾‾‾‾‾‾|                                     \n" \
+f"             |       | |‾‾‾‾‾‾‾‾‾‾‾‾‾‾|                    \n" \
+f"              ‾‾‾‾|  | |  {mainStage[0]}  {mainStage[1]}  {mainStage[2]}  |                    \n" \
+f"                  |  |_|    -    -    |_______             \n" \
+f"           ___|‾‾‾‾    -              -       |            \n" \
+f"          |               -        -          | |‾‾|       \n" \
+f"           ‾‾‾|               --              |_|  |       \n" \
+f"              |                                    |_|‾‾‾| \n" \
+f"              |         []    []    []        |‾|        | \n" \
+f"        ______|            {diningArea[1]}    {diningArea[0]}           | |  |‾|___| \n" \
+f"       |      .         []    []    []        | |  |       \n" \
+f"       | {pirateCove}  .                                | |  |_|‾‾‾| \n" \
+f"       |  .                                   | |        | \n" \
+f"       |_______           _________           | |__|‾|___| \n" \
+f"               ‾‾‾‾‾|    |         |     |‾‾||‾             \n" \
+f"           _____   |      |       |      | |  ‾‾‾‾‾|        \n" \
+f"          |     |  |  {leftHall[0]}  |       |      | |       |        \n" \
+f"          |     |__|      |       |      | |_______|                 \n" \
+f"          |   {supplyCloset}          |       |      |                 \n" \
+f"          |     |‾‾|      |  ___  |      |                 \n" \
+f"          |     |  |      | |📺 | |      |                 \n" \
+f"           ‾‾‾‾‾   |      |_|   |_|      |                 \n" \
+f"                   |      {door1} {office[0]} {door2}       |                 \n" \
+f"                   |      |‾|   |‾|      |                 \n" \
+f"                   | {leftDoor[0]}   | |___| | {rightDoor[0]}   |                 \n" \
+f"                    ‾‾‾‾‾‾         ‾‾‾‾‾‾" 
+" \n\n") 
     print(powerDrainRate, bonnieMove)
 
+nightOneGraphics()
 
 def bonnieLogic():
-    global bonniePos, gameOver, mainStage, leftHall, office, bonnieRage, bonnieMove
+    global bonniePos, gameOver, mainStage, leftHall, office, bonnieRage, bonnieMove, supplyCloset
 
     if random.randint(bonnieRage,20) == 20:
         
@@ -65,23 +93,40 @@ def bonnieLogic():
             if bonniePos == 0:
                 bonniePos = 1
                 mainStage[0] = "  "
-                leftHall[0] = "🐰"
+                diningArea[0] = "🐰"  
+
 
             elif bonniePos == 1:
                 bonniePos = 2
-                leftHall[0] = "  "
-                leftDoor[0] = "🐰"
+                diningArea[0] = "  "  
+                leftHall[0] = "🐰"
 
             elif bonniePos == 2:
+                bonniePos = 3
+                leftHall[0] = "  "
+                supplyCloset = "🐰"
+
+            elif bonniePos == 3:
+                bonniePos = 4
+                supplyCloset = "  "
+                leftHall[0] = "🐰"   
+
+            elif bonniePos == 4:
+                bonniePos = 5
+                leftHall[0] = "  "
+                leftDoor[0] = "🐰"       
+
+            elif bonniePos == 5:
                 if door1Closed:
                     bonniePos = 0
                     mainStage[0] = "🐰"
                     leftDoor[0] = "  "                
                 else:
-                    bonniePos = 4
+                    bonniePos = 6
                     leftDoor[0] = "  "
                     office[0] = "🐰"
                     gameOver = True
+
 
 
 
@@ -156,6 +201,8 @@ def playNight1():
         time.sleep(0.5)
         bonnieLogic()
 
+
+        #Number of seconds each hour lasts \/
         if time.time() - lastTimeUpdate >= 30:
             gameTime += 1
             lastTimeUpdate = time.time()
